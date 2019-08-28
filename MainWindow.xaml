@@ -10,20 +10,49 @@
         <Button Content="Refresh" HorizontalAlignment="Left" Margin="55,50,0,0" VerticalAlignment="Top" Width="100" Height="40" FontSize="20" Click="Refresh_All_Process_List"/>
 
 
-        <ListView Name="processListView" FontSize="16" Margin="190,80,223,144">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="PID" Width="70" DisplayMemberBinding="{Binding Path=pid}"/>
-                    <GridViewColumn Header="Name" Width="150" DisplayMemberBinding="{Binding Path=name}"/>
-                    <GridViewColumn Header="Title" Width="150" DisplayMemberBinding="{Binding Path=title}"/>
-                    <GridViewColumn Header="Flag" Width="100" DisplayMemberBinding="{Binding Path=flag}"/>
-                    <GridViewColumn Header="Path" Width="300" DisplayMemberBinding="{Binding Path=exe_path}"/>
-                </GridView>
-            </ListView.View>
-
-
-        </ListView>
         <Button Content="Start" HorizontalAlignment="Left" Margin="55,190,0,0" VerticalAlignment="Top" Width="100" Height="40" FontSize="24" Click="Show_All_Process"/>
         <Button Content="WOW" HorizontalAlignment="Left" Margin="55,115,0,0" VerticalAlignment="Top" Width="100" Height="40" FontSize="24" Click="Show_WOW_Process"/>
+        <TextBlock Name="debugTextBlock" HorizontalAlignment="Left" Margin="28,263,0,0" TextWrapping="Wrap" Text="Debug Message" VerticalAlignment="Top" Width="127" Height="143"/>
+        <Button Content="As Master" HorizontalAlignment="Left" Margin="273,21,0,0" VerticalAlignment="Top" Width="75" Click="As_Master" />
+        <Button Content="As Slave" HorizontalAlignment="Left" Margin="425,21,0,0" VerticalAlignment="Top" Width="75" Click="As_Slave"/>
+        <Button Content="Remove" HorizontalAlignment="Left" Margin="569,21,0,0" VerticalAlignment="Top" Width="75" Click="To_Remove"/>
+
+        <TabControl HorizontalAlignment="Left" Height="345" Margin="201,61,0,0" VerticalAlignment="Top" Width="923">
+            <TabItem Header="AllProcessList">
+                <Grid Background="#FFE5E5E5">
+                    <ListView Name="processListView" FontSize="16" Margin="10,10,0,10" SelectionChanged="processListView_SelectionChanged">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="PID" Width="70" DisplayMemberBinding="{Binding Path=pid}"/>
+                                <GridViewColumn Header="Name" Width="150" DisplayMemberBinding="{Binding Path=name}"/>
+                                <GridViewColumn Header="Title" Width="150" DisplayMemberBinding="{Binding Path=title}"/>
+                                <GridViewColumn Header="Flag" Width="100" DisplayMemberBinding="{Binding Path=flag}"/>
+                                <GridViewColumn Header="Path" Width="300" DisplayMemberBinding="{Binding Path=exe_path}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="SelectedProcessList">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60*"/>
+                        <ColumnDefinition Width="81*"/>
+                        <ColumnDefinition Width="772*"/>
+                    </Grid.ColumnDefinitions>
+                    <ListView Name="selectedListView" FontSize="16" Margin="10,10,0,10" SelectionChanged="selectedView_SelectionChanged" Grid.ColumnSpan="3">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="PID" Width="70" DisplayMemberBinding="{Binding Path=pid}"/>
+                                <GridViewColumn Header="Name" Width="150" DisplayMemberBinding="{Binding Path=name}"/>
+                                <GridViewColumn Header="Title" Width="150" DisplayMemberBinding="{Binding Path=title}"/>
+                                <GridViewColumn Header="Flag" Width="100" DisplayMemberBinding="{Binding Path=flag}"/>
+                                <GridViewColumn Header="Path" Width="300" DisplayMemberBinding="{Binding Path=exe_path}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

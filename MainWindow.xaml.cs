@@ -22,12 +22,14 @@ namespace ShadowConsil
     /// </summary>
     public partial class MainWindow : Window
     {
-        internal ProcessManager _manager = new ProcessManager();
+        internal ProcessManager manager = new ProcessManager();
+        ProcessInfo selected = null;
 
         public MainWindow()
         {
             InitializeComponent();
-            processListView.ItemsSource = _manager.AllProcessList;
+            processListView.ItemsSource = manager.AllProcessList;
+            selectedListView.ItemsSource = manager.ManagedProcessList;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -42,12 +44,63 @@ namespace ShadowConsil
 
         private void Refresh_All_Process_List(object sender, RoutedEventArgs e)
         {
-            _manager.RefreshAllProcessList();
+            manager.RefreshAllProcessList();
         }
 
         private void Show_WOW_Process(object sender, RoutedEventArgs e)
         {
+    
+        }
 
+        private void processListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            var lv = (ListView)sender;
+            if (lv.SelectedItem != null)
+            {
+                this.selected = (ProcessInfo)lv.SelectedItem;
+            }
+            else this.selected = null;
+        }
+
+        private void selectedView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var lv = (ListView)sender;
+            if (lv.SelectedItem != null)
+            {
+                this.selected = (ProcessInfo)lv.SelectedItem;
+            }
+            else this.selected = null;
+        }
+
+        private void As_Master(object sender, RoutedEventArgs e)
+        {
+            if (this.selected != null)
+            {
+                this.manager.AsMaster(this.selected);
+            }
+        }
+
+        private void As_Slave(object sender, RoutedEventArgs e)
+        {
+            if (this.selected != null)
+            {
+                this.manager.AsSlave(this.selected);
+            }
+        }
+
+        private void To_Remove(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+
+
+        private ProcessInfo getListViewProcessInfo(object sender)
+        {
+            Console.WriteLine(sender.ToString());
+            var lv = (ListView)sender;
+            return (ProcessInfo)lv.SelectedItem;
         }
     }
 }

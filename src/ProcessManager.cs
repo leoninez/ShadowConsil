@@ -12,20 +12,69 @@ namespace ShadowConsil.src
     {
         public ObservableCollection<ProcessInfo> AllProcessList { get; set; }
         public ObservableCollection<ProcessInfo> ManagedProcessList { get; set; }
+        public Dictionary<int, ProcessInfo> ManagedProcessMap { get; set; }
+
+        public ProcessInfo Master { get; set; }
 
         public ProcessManager()
         {
             this.AllProcessList = new ObservableCollection<ProcessInfo>();
             this.ManagedProcessList = new ObservableCollection<ProcessInfo>();
+            this.ManagedProcessMap = new Dictionary<int, ProcessInfo>();
+
+            this.Master = null;
+        }
+
+
+        public void AsMaster(ProcessInfo p)
+        {
+            if (this.Master != null)
+            {
+                this.Master.flag = ProcessInfo.ProcessFlag.SLAVE;
+            }
+
+            this.Master = p;
+            this.Master.flag = ProcessInfo.ProcessFlag.MASTER;
+
+            this.RefreshSelectedProcessList();
+        }
+
+        public void AsSlave(ProcessInfo p)
+        {
+            if (this.Master == p)
+            {
+                this.Master = null;
+            }
+
+            p.flag = ProcessInfo.ProcessFlag.SLAVE;
+            this.RefreshSelectedProcessList();
+        }
+
+        public void AsRemove(ProcessInfo p)
+        {
+            if (this.Master == p)
+            {
+                this.Master = null;
+            }
+
+            p.flag = ProcessInfo.ProcessFlag.NONE;
+            this.RefreshSelectedProcessList();
         }
 
         public void RefreshAllProcessList()
         {
-            AllProcessList.Clear();
-            var processes = Process.GetProcesses();
+            this.AllProcessList.Clear();
 
+            var processes = Process.GetProcesses();
+      
             foreach (Process p in processes)
             {
+                if (this.ManagedProcessMap.ContainsKey(p.Id))
+                {
+                    AllProcessList.Add(this.ManagedProcessMap[p.Id]);
+                    continue;
+                }
+
                 var info = new ProcessInfo
                 {
                     pid = p.Id,
@@ -38,6 +87,20 @@ namespace ShadowConsil.src
                 };
 
                 AllProcessList.Add(info);
+            }
+        }
+
+        public void RefreshSelectedProcessList()
+        {
+            this.ManagedProcessList.Clear();
+            this.ManagedProcessMap.Clear();
+            foreach (ProcessInfo p in this.AllProcessList)
+            {
+                if (p.flag != ProcessInfo.ProcessFlag.NONE)
+                {
+                    this.ManagedProcessList.Add(p);
+                    this.ManagedProcessMap.Add(p.pid, p);
+                }
             }
         }
     }

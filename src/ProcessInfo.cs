@@ -17,6 +17,11 @@ namespace ShadowConsil.src
 
         public Process raw { get; set; }
 
+        public override string ToString()
+        {
+            return $"{pid} - {name} - {title} - {flag}";
+        }
+
         public enum ProcessFlag { NONE, MASTER, SLAVE}
     }
 }
