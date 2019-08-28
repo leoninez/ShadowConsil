@@ -1,0 +1,29 @@
+﻿<Window x:Class="ShadowConsil.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ShadowConsil"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="537" Width="1139">
+    <Grid Margin="0,0,-187,-128">
+        <Button Content="Refresh" HorizontalAlignment="Left" Margin="55,50,0,0" VerticalAlignment="Top" Width="100" Height="40" FontSize="20" Click="Refresh_All_Process_List"/>
+
+
+        <ListView Name="processListView" FontSize="16" Margin="190,80,223,144">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="PID" Width="70" DisplayMemberBinding="{Binding Path=pid}"/>
+                    <GridViewColumn Header="Name" Width="150" DisplayMemberBinding="{Binding Path=name}"/>
+                    <GridViewColumn Header="Title" Width="150" DisplayMemberBinding="{Binding Path=title}"/>
+                    <GridViewColumn Header="Flag" Width="100" DisplayMemberBinding="{Binding Path=flag}"/>
+                    <GridViewColumn Header="Path" Width="300" DisplayMemberBinding="{Binding Path=exe_path}"/>
+                </GridView>
+            </ListView.View>
+
+
+        </ListView>
+        <Button Content="Start" HorizontalAlignment="Left" Margin="55,190,0,0" VerticalAlignment="Top" Width="100" Height="40" FontSize="24" Click="Show_All_Process"/>
+        <Button Content="WOW" HorizontalAlignment="Left" Margin="55,115,0,0" VerticalAlignment="Top" Width="100" Height="40" FontSize="24" Click="Show_WOW_Process"/>
+    </Grid>
+</Window>
