@@ -39,7 +39,7 @@ namespace ShadowConsil.src
                 }
 
                 string processName = CaseSensive ? p.ProcessName : p.ProcessName.ToLower();
-                if (processName != this.TargetAppName)
+                if (TargetAppName != null && processName != this.TargetAppName)
                 {
                     continue;
                 }

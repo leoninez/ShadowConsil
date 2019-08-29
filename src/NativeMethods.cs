@@ -14,6 +14,7 @@ namespace ShadowConsil.src
 
         public static readonly int WM_SETTEXT = 0x000C;
         public static readonly int WM_KEYDOWN = 0x0100;
+        public static readonly int WM_KEYUP = 0x0101;
 
         public enum HookType : int
         {
