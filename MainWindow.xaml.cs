@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -39,7 +39,13 @@ namespace ShadowConsil
 
         private void Show_All_Process(object sender, RoutedEventArgs e)
         {
+            var kh = new KeyboardHook(false);
+            kh.KeyDown += Kh_KeyDown;
+        }
 
+        private static void Kh_KeyDown(System.Windows.Forms.Keys key, bool Shift, bool Ctrl, bool Alt)
+        {
+            Debug.WriteLine($"{key}, Shift = {Shift}, Ctrl = {Ctrl}, Alt = {Alt}");
         }
 
         private void Refresh_All_Process_List(object sender, RoutedEventArgs e)
