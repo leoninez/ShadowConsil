@@ -5,54 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ShadowConsil"
         mc:Ignorable="d"
-        Title="MainWindow" Height="537" Width="1139">
+        Title="MainWindow" FontFamily="Microsoft Yahei"
+        Height="537" Width="1139">
     <Grid Margin="0,0,-187,-128">
-        <Button Content="Refresh" HorizontalAlignment="Left" Margin="55,50,0,0" VerticalAlignment="Top" Width="100" Height="40" FontSize="20" Click="Refresh_All_Process_List"/>
+        <Button Content="Refresh" HorizontalAlignment="Left" Margin="20,65,0,0" VerticalAlignment="Top" Width="145" Height="40" FontSize="12" Click="Refresh_WOW_Process"/>
+        <Button Name="actionButton" Content="Enable Receive Key" Background="Lime" HorizontalAlignment="Left" Margin="20,125,0,0" VerticalAlignment="Top" Width="145" Height="40" FontSize="12" Click="Enable_Key_Receive"/>
+        <TextBlock Name="debugTextBlock" HorizontalAlignment="Left" Margin="20,193,0,0" TextWrapping="Wrap" Text="Receive Message Disabled" VerticalAlignment="Top" Width="145" Height="277"/>
 
 
-        <Button Content="Start" HorizontalAlignment="Left" Margin="55,190,0,0" VerticalAlignment="Top" Width="100" Height="40" FontSize="24" Click="Show_All_Process"/>
-        <Button Content="WOW" HorizontalAlignment="Left" Margin="55,115,0,0" VerticalAlignment="Top" Width="100" Height="40" FontSize="24" Click="Show_WOW_Process"/>
-        <TextBlock Name="debugTextBlock" HorizontalAlignment="Left" Margin="28,263,0,0" TextWrapping="Wrap" Text="Debug Message" VerticalAlignment="Top" Width="127" Height="143"/>
-        <Button Content="As Master" HorizontalAlignment="Left" Margin="273,21,0,0" VerticalAlignment="Top" Width="75" Click="As_Master" />
-        <Button Content="As Slave" HorizontalAlignment="Left" Margin="425,21,0,0" VerticalAlignment="Top" Width="75" Click="As_Slave"/>
-        <Button Content="Remove" HorizontalAlignment="Left" Margin="569,21,0,0" VerticalAlignment="Top" Width="75" Click="To_Remove"/>
+        <Button Content="Set Receive Key" HorizontalAlignment="Left" Margin="185,20,0,0" VerticalAlignment="Top" Width="110" Click="Set_Receive_Key" Height="32" />
+        <Button Content="Unset Receive Key" HorizontalAlignment="Left" Margin="320,20,0,0" VerticalAlignment="Top" Width="125" Click="Unset_Receive_Key" Height="32"/>
+        <Button Content="Test Receive Key" HorizontalAlignment="Left" Margin="980,20,0,0" VerticalAlignment="Top" Width="125" Click="Test_Receive_Key" Height="32"/>
 
-        <TabControl HorizontalAlignment="Left" Height="345" Margin="201,61,0,0" VerticalAlignment="Top" Width="923">
-            <TabItem Header="AllProcessList">
-                <Grid Background="#FFE5E5E5">
-                    <ListView Name="processListView" FontSize="16" Margin="10,10,0,10" SelectionChanged="processListView_SelectionChanged">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="PID" Width="70" DisplayMemberBinding="{Binding Path=pid}"/>
-                                <GridViewColumn Header="Name" Width="150" DisplayMemberBinding="{Binding Path=name}"/>
-                                <GridViewColumn Header="Title" Width="150" DisplayMemberBinding="{Binding Path=title}"/>
-                                <GridViewColumn Header="Flag" Width="100" DisplayMemberBinding="{Binding Path=flag}"/>
-                                <GridViewColumn Header="Path" Width="300" DisplayMemberBinding="{Binding Path=exe_path}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-            </TabItem>
-            <TabItem Header="SelectedProcessList">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="60*"/>
-                        <ColumnDefinition Width="81*"/>
-                        <ColumnDefinition Width="772*"/>
-                    </Grid.ColumnDefinitions>
-                    <ListView Name="selectedListView" FontSize="16" Margin="10,10,0,10" SelectionChanged="selectedView_SelectionChanged" Grid.ColumnSpan="3">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="PID" Width="70" DisplayMemberBinding="{Binding Path=pid}"/>
-                                <GridViewColumn Header="Name" Width="150" DisplayMemberBinding="{Binding Path=name}"/>
-                                <GridViewColumn Header="Title" Width="150" DisplayMemberBinding="{Binding Path=title}"/>
-                                <GridViewColumn Header="Flag" Width="100" DisplayMemberBinding="{Binding Path=flag}"/>
-                                <GridViewColumn Header="Path" Width="300" DisplayMemberBinding="{Binding Path=exe_path}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                </Grid>
-            </TabItem>
-        </TabControl>
+        <ListView Name="processListView" FontSize="12" Margin="185,57,213,164">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="PID" Width="100" DisplayMemberBinding="{Binding Path=pid}"/>
+                    <GridViewColumn Header="Name" Width="260" DisplayMemberBinding="{Binding Path=name}"/>
+                    <GridViewColumn Header="Title" Width="260" DisplayMemberBinding="{Binding Path=title}"/>
+                    <GridViewColumn Header="Status" Width="260" DisplayMemberBinding="{Binding Path=flag}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </Window>

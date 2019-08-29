@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,91 +23,109 @@ namespace ShadowConsil
     /// </summary>
     public partial class MainWindow : Window
     {
-        internal ProcessManager manager = new ProcessManager();
-        ProcessInfo selected = null;
+        internal WowProcessManager manager = new WowProcessManager("Notepad", false);
+        internal bool enabled = false;
+        internal List<KeyboardSender> aliveSenders = new List<KeyboardSender>();
+        internal KeyboardHook globalKeyHook = null;
 
         public MainWindow()
         {
             InitializeComponent();
-            processListView.ItemsSource = manager.AllProcessList;
-            selectedListView.ItemsSource = manager.ManagedProcessList;
+            processListView.ItemsSource = manager.ManagedProcessList;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Kh_KeyDown(System.Windows.Forms.Keys key, bool shift, bool ctrl, bool alt)
         {
+            // filter some code
+            int keyV = (int)key;
 
+            if ((keyV >= 48 && keyV <= 90) || (keyV >= 112 && keyV <= 117))
+            {
+                Debug.WriteLine($"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}");
+                debugTextBlock.Text = $"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}";
+                foreach (KeyboardSender sender in aliveSenders)
+                {
+                    sender.Trigger(key, shift, ctrl, alt);
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"Ignore {key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}");
+                debugTextBlock.Text = $"Ignore {key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}";
+            }                Debug.WriteLine($"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}");
+                debugTextBlock.Text = $"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}";
         }
 
-        private void Show_All_Process(object sender, RoutedEventArgs e)
-        {
-            var kh = new KeyboardHook(false);
-            kh.KeyDown += Kh_KeyDown;
-        }
-
-        private static void Kh_KeyDown(System.Windows.Forms.Keys key, bool Shift, bool Ctrl, bool Alt)
-        {
-            Debug.WriteLine($"{key}, Shift = {Shift}, Ctrl = {Ctrl}, Alt = {Alt}");
-        }
-
-        private void Refresh_All_Process_List(object sender, RoutedEventArgs e)
+        private void Refresh_WOW_Process(object sender, RoutedEventArgs e)
         {
             manager.RefreshAllProcessList();
         }
 
-        private void Show_WOW_Process(object sender, RoutedEventArgs e)
+        private void Enable_Key_Receive(object sender, RoutedEventArgs e)
         {
-    
-        }
-
-        private void processListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-            var lv = (ListView)sender;
-            if (lv.SelectedItem != null)
+            if (enabled)  // try to disable receive key
             {
-                this.selected = (ProcessInfo)lv.SelectedItem;
+                enabled = false;
+                actionButton.Content = "Enable Receive Key";
+                actionButton.Background = Brushes.Lime;
+
+                this.aliveSenders.Clear();
+                globalKeyHook.Dispose();
+                globalKeyHook = null;
+
+                debugTextBlock.Text = "Disabled Receive Key";
             }
-            else this.selected = null;
-        }
-
-        private void selectedView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var lv = (ListView)sender;
-            if (lv.SelectedItem != null)
+            else // try to enable receive key
             {
-                this.selected = (ProcessInfo)lv.SelectedItem;
-            }
-            else this.selected = null;
-        }
+                enabled = true;
+                actionButton.Content = "Disable Receive Key";
+                actionButton.Background = Brushes.Red;
 
-        private void As_Master(object sender, RoutedEventArgs e)
-        {
-            if (this.selected != null)
-            {
-                this.manager.AsMaster(this.selected);
-            }
-        }
+                foreach (ProcessInfo info in manager.ManagedProcessList)
+                {
+                    if (info.flag == ProcessInfo.ProcessFlag.RECEIVE_KEY)
+                    {
+                        this.aliveSenders.Add(info.sender);
+                    }
+                }
 
-        private void As_Slave(object sender, RoutedEventArgs e)
-        {
-            if (this.selected != null)
-            {
-                this.manager.AsSlave(this.selected);
+                globalKeyHook = new KeyboardHook(true);
+                globalKeyHook.KeyDown += Kh_KeyDown;
+
+                debugTextBlock.Text = "Enable Receive Key";
             }
         }
 
-        private void To_Remove(object sender, RoutedEventArgs e)
+        private void Set_Receive_Key(object sender, RoutedEventArgs e)
         {
-           
+            ProcessInfo info = (ProcessInfo)processListView.SelectedItem;
+
+            if (info != null)
+            {
+                info.flag = ProcessInfo.ProcessFlag.RECEIVE_KEY;
+            }
+        }
+
+        private void Unset_Receive_Key(object sender, RoutedEventArgs e)
+        {
+            ProcessInfo info = (ProcessInfo)processListView.SelectedItem;
+
+            if (info != null)
+            {
+                info.flag = ProcessInfo.ProcessFlag.NOT_RECEIVE_KEY;
+            }
+        }
+
+        private void Test_Receive_Key(object sender, RoutedEventArgs e)
+        {
+            ProcessInfo info = (ProcessInfo)processListView.SelectedItem;
+
+            if (info != null)
+            {
+                info.sender.Trigger(System.Windows.Forms.Keys.A);
+            }
         }
 
 
-
-        private ProcessInfo getListViewProcessInfo(object sender)
-        {
-            Console.WriteLine(sender.ToString());
-            var lv = (ListView)sender;
-            return (ProcessInfo)lv.SelectedItem;
-        }
     }
 }

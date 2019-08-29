@@ -16,12 +16,13 @@ namespace ShadowConsil.src
         public string exe_path { get; set; }
 
         public Process raw { get; set; }
+        public KeyboardSender sender { get; set; }
 
         public override string ToString()
         {
             return $"{pid} - {name} - {title} - {flag}";
         }
 
-        public enum ProcessFlag { NONE, MASTER, SLAVE}
+        public enum ProcessFlag { NOT_RECEIVE_KEY, RECEIVE_KEY}
     }
 }

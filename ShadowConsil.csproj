@@ -58,8 +58,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="src\KeyboardHook.cs" />
+    <Compile Include="src\KeyboardSender.cs" />
+    <Compile Include="src\NativeMethods.cs" />
     <Compile Include="src\ProcessInfo.cs" />
-    <Compile Include="src\ProcessManager.cs" />
+    <Compile Include="src\WowProcessManager.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
