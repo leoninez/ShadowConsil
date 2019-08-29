@@ -1,21 +1,8 @@
 ﻿using ShadowConsil.src;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
 namespace ShadowConsil
 {
     /// <summary>
@@ -104,6 +91,8 @@ namespace ShadowConsil
             {
                 info.flag = ProcessInfo.ProcessFlag.RECEIVE_KEY;
             }
+
+            manager.RefreshAllProcessList();
         }
 
         private void Unset_Receive_Key(object sender, RoutedEventArgs e)
@@ -114,6 +103,8 @@ namespace ShadowConsil
             {
                 info.flag = ProcessInfo.ProcessFlag.NOT_RECEIVE_KEY;
             }
+
+            manager.RefreshAllProcessList();
         }
 
         private void Test_Receive_Key(object sender, RoutedEventArgs e)
