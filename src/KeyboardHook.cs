@@ -9,19 +9,9 @@ namespace ShadowConsil.src
     {
         bool Global = false;
 
-        public delegate void LocalKeyEventHandler(Keys key, bool Shift, bool Ctrl, bool Alt);
+        public delegate void LocalKeyEventHandler(Keys key);
         public event LocalKeyEventHandler KeyDown;
         public event LocalKeyEventHandler KeyUp;
-
-        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-        public struct KBDLLHookStruct
-        {
-            public Int32 vkCode;
-            public Int32 scanCode;
-            public Int32 flags;
-            public Int32 time;
-            public Int32 dwExtraInfo;
-        }
 
         private int HookID = 0;
         CallbackDelegate TheHookCB = null;
@@ -69,7 +59,6 @@ namespace ShadowConsil.src
         //The listener that will trigger events
         private int KeybHookProc(int Code, int W, int L)
         {
-            KBDLLHookStruct LS = new KBDLLHookStruct();
             if (Code < 0)
             {
                 return CallNextHookEx(HookID, Code, W, L);
@@ -85,11 +74,11 @@ namespace ShadowConsil.src
                         int keydownup = L >> 30;
                         if (keydownup == 0)
                         {
-                            if (KeyDown != null) KeyDown((Keys)W, GetShiftPressed(), GetCtrlPressed(), GetAltPressed());
+                            KeyDown?.Invoke((Keys)W);
                         }
                         if (keydownup == -1)
                         {
-                            if (KeyUp != null) KeyUp((Keys)W, GetShiftPressed(), GetCtrlPressed(), GetAltPressed());
+                            KeyUp?.Invoke((Keys)W);
                         }
                         //System.Diagnostics.Debug.WriteLine("Down: " + (Keys)W);
                     }
@@ -100,16 +89,13 @@ namespace ShadowConsil.src
 
                     Int32 vkCode = Marshal.ReadInt32((IntPtr)L); //Leser vkCode som er de første 32 bits hvor L peker.
 
-                    if (kEvent != KeyEvents.KeyDown && kEvent != KeyEvents.KeyUp && kEvent != KeyEvents.SKeyDown && kEvent != KeyEvents.SKeyUp)
-                    {
-                    }
                     if (kEvent == KeyEvents.KeyDown || kEvent == KeyEvents.SKeyDown)
                     {
-                        if (KeyDown != null) KeyDown((Keys)vkCode, GetShiftPressed(), GetCtrlPressed(), GetAltPressed());
+                        KeyDown?.Invoke((Keys)vkCode);
                     }
                     if (kEvent == KeyEvents.KeyUp || kEvent == KeyEvents.SKeyUp)
                     {
-                        if (KeyUp != null) KeyUp((Keys)vkCode, GetShiftPressed(), GetCtrlPressed(), GetAltPressed());
+                        KeyUp?.Invoke((Keys)vkCode);
                     }
                 }
             }

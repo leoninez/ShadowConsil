@@ -1,7 +1,9 @@
 ﻿using ShadowConsil.src;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 namespace ShadowConsil
 {
@@ -10,7 +12,7 @@ namespace ShadowConsil
     /// </summary>
     public partial class MainWindow : Window
     {
-        internal WowProcessManager manager = new WowProcessManager("Wow");
+        internal WowProcessManager manager = new WowProcessManager("notepad");
         internal bool enabled = false;
         internal List<KeyboardSender> aliveSenders = new List<KeyboardSender>();
         internal KeyboardHook globalKeyHook = null;
@@ -21,52 +23,64 @@ namespace ShadowConsil
             processListView.ItemsSource = manager.ManagedProcessList;
         }
 
-        List<System.Windows.Forms.Keys> ignoreKeys = new List<System.Windows.Forms.Keys>
-        { System.Windows.Forms.Keys.A, System.Windows.Forms.Keys.S, System.Windows.Forms.Keys.D, System.Windows.Forms.Keys.W };
+        private readonly List<System.Windows.Forms.Keys> ignoreKeys = new List<System.Windows.Forms.Keys>
+        {
+            System.Windows.Forms.Keys.A, System.Windows.Forms.Keys.S, System.Windows.Forms.Keys.D, System.Windows.Forms.Keys.W
+        };
+        private readonly List<System.Windows.Forms.Keys> extraAcceptKey = new List<System.Windows.Forms.Keys>
+        {
+            System.Windows.Forms.Keys.LShiftKey, System.Windows.Forms.Keys.LControlKey, System.Windows.Forms.Keys.LMenu,
+            System.Windows.Forms.Keys.RShiftKey, System.Windows.Forms.Keys.RControlKey, System.Windows.Forms.Keys.RMenu,
+            System.Windows.Forms.Keys.Space
+        };
 
-        private void Kh_KeyDown(System.Windows.Forms.Keys key, bool shift, bool ctrl, bool alt)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool IsAcceptKey(System.Windows.Forms.Keys key)
         {
             // filter some code
             int keyV = (int)key;
 
-            if (((keyV >= 48 && keyV <= 90) || (keyV >= 112 && keyV <= 117)) && !ignoreKeys.Contains(key))
-            {
-                Debug.WriteLine($"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}");
-                debugTextBlock.Text = $"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}";
-                foreach (KeyboardSender sender in aliveSenders)
-                {
-                    sender.KeyDown(key, shift, ctrl, alt);
-                }
-            }
-            else
-            {
-                Debug.WriteLine($"Ignore {key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}");
-                debugTextBlock.Text = $"Ignore {key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}";
-            }                Debug.WriteLine($"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}");
-                debugTextBlock.Text = $"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}";
+            if (ignoreKeys.Contains(key)) { return false; }
+            if ((keyV >= 48 && keyV <= 90) || (keyV >= 112 && keyV <= 117)) { return true; }
+            if (extraAcceptKey.Contains(key)) { return true; }
+
+            return false;
         }
 
-        private void Kh_KeyUp(System.Windows.Forms.Keys key, bool shift, bool ctrl, bool alt)
+        private void Kh_KeyDown(System.Windows.Forms.Keys key)
         {
-            // filter some code
-            int keyV = (int)key;
-
-            if (((keyV >= 48 && keyV <= 90) || (keyV >= 112 && keyV <= 117)) && !ignoreKeys.Contains(key))
+            if (IsAcceptKey(key))
             {
-                Debug.WriteLine($"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}");
-                debugTextBlock.Text = $"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}";
+                Debug.WriteLine($"Accept Down {key}");
+                debugTextBlock.Text = $"Accept Down {key}";
                 foreach (KeyboardSender sender in aliveSenders)
                 {
-                    sender.KeyUp(key, shift, ctrl, alt);
+                    sender.KeyDown(key);
                 }
             }
             else
             {
-                Debug.WriteLine($"Ignore {key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}");
-                debugTextBlock.Text = $"Ignore {key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}";
+                Debug.WriteLine($"Ignore Down {key}");
+                debugTextBlock.Text = $"Ignore Down {key}";
             }
-            Debug.WriteLine($"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}");
-            debugTextBlock.Text = $"{key}, Shift = {shift}, Ctrl = {ctrl}, Alt = {alt}";
+        }
+
+        private void Kh_KeyUp(System.Windows.Forms.Keys key)
+        {
+            if (IsAcceptKey(key))
+            {
+                Debug.WriteLine($"Accept Up {key}");
+                debugTextBlock.Text = $"Accept Up {key}";
+                foreach (KeyboardSender sender in aliveSenders)
+                {
+                    sender.KeyUp(key);
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"Ignore Up {key}");
+                debugTextBlock.Text = $"Ignore Up {key}";
+            }
         }
 
         private void Refresh_WOW_Process(object sender, RoutedEventArgs e)
@@ -143,7 +157,5 @@ namespace ShadowConsil
                 info.sender.KeyDown(System.Windows.Forms.Keys.A);
             }
         }
-
-
     }
 }
