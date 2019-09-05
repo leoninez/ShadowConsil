@@ -59,6 +59,7 @@
     </ApplicationDefinition>
     <Compile Include="src\KeyboardHook.cs" />
     <Compile Include="src\KeyboardSender.cs" />
+    <Compile Include="src\Script\Warrior\Protective.cs" />
     <Compile Include="src\NativeMethods.cs" />
     <Compile Include="src\ProcessInfo.cs" />
     <Compile Include="src\WowProcessManager.cs" />
@@ -101,5 +102,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

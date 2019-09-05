@@ -14,6 +14,7 @@ namespace ShadowConsil
     {
         internal WowProcessManager manager = new WowProcessManager("notepad");
         internal bool enabled = false;
+        internal bool tempDisabled = false;
         internal List<KeyboardSender> aliveSenders = new List<KeyboardSender>();
         internal KeyboardHook globalKeyHook = null;
 
@@ -33,6 +34,7 @@ namespace ShadowConsil
             System.Windows.Forms.Keys.RShiftKey, System.Windows.Forms.Keys.RControlKey, System.Windows.Forms.Keys.RMenu,
             System.Windows.Forms.Keys.Space
         };
+        private readonly System.Windows.Forms.Keys switchKey = System.Windows.Forms.Keys.H;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool IsAcceptKey(System.Windows.Forms.Keys key)
@@ -47,8 +49,25 @@ namespace ShadowConsil
             return false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private bool IsSwitchKey(System.Windows.Forms.Keys key)
+        {
+            return key.Equals(switchKey);
+        }
+
         private void Kh_KeyDown(System.Windows.Forms.Keys key)
         {
+
+            if (IsSwitchKey(key))
+            {
+                tempDisabled = !tempDisabled;
+            }
+
+            if (tempDisabled)
+            {
+                return;
+            }
+
             if (IsAcceptKey(key))
             {
                 Debug.WriteLine($"Accept Down {key}");
@@ -67,6 +86,11 @@ namespace ShadowConsil
 
         private void Kh_KeyUp(System.Windows.Forms.Keys key)
         {
+            if (tempDisabled)
+            {
+                return;
+            }
+
             if (IsAcceptKey(key))
             {
                 Debug.WriteLine($"Accept Up {key}");
@@ -93,6 +117,7 @@ namespace ShadowConsil
             if (enabled)  // try to disable receive key
             {
                 enabled = false;
+                tempDisabled = false;
                 actionButton.Content = "Enable Receive Key";
                 actionButton.Background = Brushes.Lime;
 
@@ -105,6 +130,7 @@ namespace ShadowConsil
             else // try to enable receive key
             {
                 enabled = true;
+                tempDisabled = false;
                 actionButton.Content = "Disable Receive Key";
                 actionButton.Background = Brushes.Red;
 

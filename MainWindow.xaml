@@ -21,9 +21,8 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="PID" Width="100" DisplayMemberBinding="{Binding Path=pid}"/>
-                    <GridViewColumn Header="Name" Width="260" DisplayMemberBinding="{Binding Path=name}"/>
-                    <GridViewColumn Header="Title" Width="260" DisplayMemberBinding="{Binding Path=title}"/>
                     <GridViewColumn Header="Status" Width="260" DisplayMemberBinding="{Binding Path=flag}"/>
+                    <GridViewColumn Header="Script" Width="260" DisplayMemberBinding="{Binding Path=Script}"/>
                 </GridView>
             </ListView.View>
         </ListView>
